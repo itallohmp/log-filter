@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+.bashrc
+.bash_history
+.ssh/
+.cache/
+.vscode-server/
+.copilot/
+*.log
+.bash_logout
+.gitconfig
+.lesshst
+.profile
+.sudo_as_admin_successful
+.wget-hsts

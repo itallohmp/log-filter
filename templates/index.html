@@ -5,50 +5,55 @@
     <title>Logs NAT</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
+    <header class="heading">
+        <h1>Logs NAT</h1>
+    </header>
+    <div class="filtros">
+        <label>Linhas por página:
+            <select id="pageSize">
+                <option value="50">50</option>
+                <option value="100" selected>100</option>
+                <option value="200">200</option>
+            </select>
+        </label>
+        <label>Protocolo:
+            <input type="text" id="keyword" placeholder="TCP, UDP ...">
+        </label>
+        <label>IP (NAT):
+            <input type="text" id="ip" placeholder="Ex: 177.137.21.38">
+        </label>
+        <label>Porta (NAT):
+            <input type="text" id="porta" placeholder="Ex: 42857">
+        </label>
+        <label>Dia:
+            <input type="date" id="day">
+        </label>
+        <label>Hora de:
+            <input type="time" id="hour_from">
+        </label>
+        <label>até:
+            <input type="time" id="hour_to">
+        </label>
 
-<h1>Logs NAT</h1>
-
-<div class="filtros">
-    <label>Linhas:
-        <input type="number" id="lines" value="50">
-    </label>
-    <label>Protocolo::
-        <input type="text" id="keyword" placeholder="TCP, UDP ...">
-    </label>
-    <label>IP:
-        <input type="text" id="ip" placeholder="Ex: 100.64.6.121">
-    </label>
-    <label>Porta:
-        <input type="text" id="porta" placeholder="Ex: 53">
-    </label>
-    <label>Data:
-        <input type="text" id="data" placeholder="Ex: Mar 11">
-    </label>
-    <button id="btnBuscar">Buscar</button>
-</div>
-
-<br>
-
-<table id="tabelaLogs" border="1">
-
-<thead>
-<tr>
-    <th>Data</th>
-    <th>Protocolo</th>
-    <th>Origem</th>
-    <th>NAT</th>
-    <th>Destino</th>
-    <th>Destino Final</th>
-</tr>
-</thead>
-
-<tbody></tbody>
-
-</table>
-
-<script src="/static/script.js"></script>
-
+        <button id="btnBuscar">Buscar</button>
+        <span id="status" style="margin-left:10px"></span>
+    </div>
+    <br>
+    <table id="tabelaLogs" border="1">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Protocolo</th>
+                <th>Origem</th>
+                <th>NAT</th>
+                <th>Destino</th>
+                <th>Destino Final</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="pagination" style="margin-top:10px"></div>
+    <script src="/static/script.js"></script>
 </body>
 </html>

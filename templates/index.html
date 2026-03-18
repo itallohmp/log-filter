@@ -1,59 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Logs NAT</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLog</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-    <header class="heading">
-        <h1>Logs NAT</h1>
-    </header>
-    <div class="filtros">
-        <label>Linhas por página:
-            <select id="pageSize">
-                <option value="50">50</option>
-                <option value="100" selected>100</option>
-                <option value="200">200</option>
-            </select>
-        </label>
-        <label>Protocolo:
-            <input type="text" id="keyword" placeholder="TCP, UDP ...">
-        </label>
-        <label>IP (NAT):
-            <input type="text" id="ip" placeholder="Ex: 177.137.21.38">
-        </label>
-        <label>Porta (NAT):
-            <input type="text" id="porta" placeholder="Ex: 42857">
-        </label>
-        <label>Dia:
-            <input type="date" id="day">
-        </label>
-        <label>Hora de:
-            <input type="time" id="hour_from">
-        </label>
-        <label>até:
-            <input type="time" id="hour_to">
-        </label>
-
-        <button id="btnBuscar">Buscar</button>
-        <span id="status" style="margin-left:10px"></span>
-    </div>
-    <br>
-    <table id="tabelaLogs" border="1">
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Protocolo</th>
-                <th>Origem</th>
-                <th>NAT</th>
-                <th>Destino</th>
-                <th>Destino Final</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <div id="pagination" style="margin-top:10px"></div>
-    <script src="/static/script.js"></script>
+<body class="body_index">
+  <header class="site_header_index">
+    <ul>
+      <li><a href="/index.html">Pagina Inicial</a></li>
+      <li><a href="/plog.html">Acesso o PLog</a></li>
+    </ul>
+  </header>
+  <main class="main_index">
+    <img src="/static/img/logo.png" alt='logoplog' class="logo_index">
+  </main>
+  <footer id="rodape_index">
+    <h3>©2025 Interativa Fibra & Energia Ltda.<span id="span_rodape"> Todos os direitos reservados. CNPJ 38.174.307/0001-81</span></h3>
+  </footer>
+  <script src="/static/script.js"></script>
 </body>
 </html>

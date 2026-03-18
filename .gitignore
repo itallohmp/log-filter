@@ -13,4 +13,4 @@ __pycache__/
 .profile
 .sudo_as_admin_successful
 .wget-hsts
-.dotnet/
+.dotnet/corefx/cryptography/crls/

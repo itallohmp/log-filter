@@ -92,6 +92,7 @@ button:hover {
   text-decoration: none;
   color:white;
   padding: 5px;
+  
 }
 
 .site_header ul li a:hover,
@@ -216,3 +217,7 @@ main {
   width: 250px;
 }
 
+.site_header_index ul li {
+  padding: 5px;
+  margin-top: 15px;
+}

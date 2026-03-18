@@ -13,10 +13,9 @@ app = FastAPI(root_path="/api")
 
 BASE_LOGS = "/home/plog/venv/logs"
 
-# Servir estáticos localmente em dev
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# CORS: ajuste as origins conforme seu frontend
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
@@ -34,9 +33,7 @@ def health():
 def root():
     return FileResponse("static/index.html")
 
-# -------------------------------
-# LISTAR ROTAS (PASTAS EXISTENTES)
-# -------------------------------
+
 @app.get("/rotas")
 def listar_rotas():
     try:
@@ -59,9 +56,7 @@ def listar_rotas():
             status_code=500
         )
 
-# -------------------------------
-# SSH LOG FETCH
-# -------------------------------
+
 def get_logs(limit: int = 50) -> str:
     hostname = "10.10.10.208"
     username = "plog"
@@ -101,9 +96,7 @@ def get_logs(limit: int = 50) -> str:
         except Exception:
             pass
 
-# -------------------------------
-# PARSE LOG
-# -------------------------------
+
 pattern = re.compile(
     r"\*(\w+\s+\d+\s+\d+:\d+:\d+\.\d+).*?"
     r"Created Translation\s+"
@@ -131,9 +124,7 @@ def parse_log_line(line: str) -> Optional[Dict]:
         "destino_final": destino_final
     }
 
-# -------------------------------
-# UTIL: parse hora string robusta
-# -------------------------------
+
 def parse_time_str(h: Optional[str]) -> Optional[time]:
     if not h:
         return None
@@ -146,9 +137,7 @@ def parse_time_str(h: Optional[str]) -> Optional[time]:
 
     return None
 
-# -------------------------------
-# API: retornar logs parseados (SSH)
-# -------------------------------
+
 @app.get("/api/logs")
 def api_get_logs(limit: int = Query(50, ge=1, le=1000)) -> JSONResponse:
     try:
@@ -164,9 +153,7 @@ def api_get_logs(limit: int = Query(50, ge=1, le=1000)) -> JSONResponse:
 
     return JSONResponse({"logs": parsed, "count": len(parsed)})
 
-# -------------------------------
-# LOGS DIRETO DO SSH (rota legacy)
-# -------------------------------
+
 @app.get("/logs")
 def logs(limit: int = Query(50, ge=1, le=1000)):
     try:
@@ -184,9 +171,7 @@ def logs(limit: int = Query(50, ge=1, le=1000)):
 
     return {"raw_logs": linhas, "parsed_logs": processados}
 
-# -------------------------------
-# FILTRO DE LOGS (STREAMING NDJSON)
-# -------------------------------
+
 @app.get("/logs/filter")
 def filter_logs(
     ip_rota: str = Query(..., description="Nome da pasta da rota"),
@@ -209,7 +194,7 @@ def filter_logs(
     mes = (mes or f"{now.month}").zfill(2)
     dia = (dia or f"{now.day}").zfill(2)
 
-    # segurança básica
+    
     if "/" in ip_rota or "\\" in ip_rota or ".." in ip_rota:
         return JSONResponse({"erro": "Nome de rota inválido."}, status_code=400)
 
@@ -229,7 +214,7 @@ def filter_logs(
         arquivos_bz = glob.glob(os.path.join(caminho, "*.bz"))
         arquivos_log = glob.glob(os.path.join(caminho, "*.log"))
 
-        # tenta download se não houver arquivos locais
+    
         if not arquivos_bz and not arquivos_log:
             print("Logs não encontrados localmente, executando script de download...")
 
@@ -257,7 +242,6 @@ def filter_logs(
                     status_code=404
                 )
 
-        # se houver .bz, tenta descompactar
         if arquivos_bz and not arquivos_log:
             print("Descompactando arquivos .bz...")
 
@@ -296,7 +280,6 @@ def filter_logs(
 
         arquivos_ordenados = sorted(arquivos_log, key=chave_ordenacao_numerica)
 
-        # filtra por hora com wrap-around
         if not hora_de and not hora_ate:
             arquivos = arquivos_ordenados[:50]
         else:

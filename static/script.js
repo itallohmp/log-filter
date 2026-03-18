@@ -1,7 +1,6 @@
-// script.js
-// Leitura em streaming NDJSON do backend e renderização incremental na tabela.
 
-const API_PREFIX = "/api"; // Se rodar sem proxy/root_path, pode trocar para ""
+
+const API_PREFIX = "/api"; 
 let currentPage = 1;
 let currentTotalPages = 1;
 let currentController = null;
@@ -20,13 +19,13 @@ function buildUrl(page = 1) {
   const keyword = document.getElementById("keyword")?.value.trim() || "";
   const ip = document.getElementById("ip")?.value.trim() || "";
   const porta = document.getElementById("porta")?.value.trim() || "";
-  const day = document.getElementById("day")?.value || ""; // YYYY-MM-DD
-  const hourFrom = document.getElementById("hour_from")?.value || ""; // HH:MM
-  const hourTo = document.getElementById("hour_to")?.value || ""; // HH:MM
+  const day = document.getElementById("day")?.value || ""; // 
+  const hourFrom = document.getElementById("hour_from")?.value || ""; 
+  const hourTo = document.getElementById("hour_to")?.value || ""; 
   const ipRota = document.getElementById("ip_rota")?.value.trim() || "";
 
   if (!ipRota) {
-    throw new Error("Selecione uma rota.");
+    throw new Error("Seleciona uma origem.");
   }
 
   const params = new URLSearchParams();
@@ -169,7 +168,6 @@ async function buscarLogs(page = 1) {
           if (statusEl) statusEl.textContent = json.erro;
         }
       } catch {
-        // se não vier JSON, mantém o texto simples
       }
 
       return;
@@ -263,7 +261,7 @@ async function carregarRotas() {
     const data = await resp.json();
     const rotas = Array.isArray(data.rotas) ? data.rotas : [];
 
-    select.innerHTML = `<option value="">Selecione uma rota</option>`;
+    select.innerHTML = `<option value="">Seleciona uma origem</option>`;
 
     if (rotas.length === 0) {
       select.innerHTML = `<option value="">Nenhuma rota encontrada</option>`;

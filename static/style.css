@@ -96,7 +96,7 @@ button:hover {
 
 .site_header ul li a:hover,
 .site_header_index ul li a:hover {
-  transition: all 1s ease-in-out;
+  transition: all 400ms ease-in-out;
   background-color: darkorange;
   color: black;
   border-radius: 5px;

@@ -8,48 +8,46 @@
 </head>
 <body class="body_plog">
   <header class="site_header">
-    <img src="/static/img/logo.png" alt="Log Polito" class="logo">
+    <img src="/static/img/logo.png" alt="Logo PLog" class="logo">
     <ul>
-      <li><a href="/index.html">Pagina Inicial</a></li>
+      <li><a href="/index.html">Página Inicial</a></li>
     </ul>
   </header>
 
   <main>
     <div class="filtros">
-      <label>Linhas por página:
-        <select id="pageSize">
-          <option value="50">50</option>
-          <option value="100" selected>100</option>
-          <option value="200">200</option>
-        </select>
-      </label>
+      <label for="pageSize">Linhas por página:</label>
+      <select id="pageSize">
+        <option value="50">50</option>
+        <option value="100" selected>100</option>
+        <option value="200">200</option>
+      </select>
 
-      <label>Protocolo:
-        <input type="text" id="keyword" placeholder="TCP, UDP ...">
-      </label>
+      <label for="ip_rota">Origem:</label>
+      <select id="ip_rota">
+        <option value="">Carregando origens...</option>
+      </select>
 
-      <label>IP (NAT):
-        <input type="text" id="ip" placeholder="Ex: 177.137.21.38">
-      </label>
+      <label for="ip">IP (NAT):</label>
+      <input type="text" id="ip" placeholder="Ex: 177.137.21.38">
 
-      <label>Porta (NAT):
-        <input type="text" id="porta" placeholder="Ex: 42857">
-      </label>
+      <label for="porta">Porta (NAT):</label>
+      <input type="text" id="porta" placeholder="Ex: 42857">
 
-      <label>Dia:
-        <input type="date" id="day">
-      </label>
+      <label for="keyword">Palavra-chave:</label>
+      <input type="text" id="keyword" placeholder="Ex: Created Translation">
 
-      <label>Hora de:
-        <input type="time" id="hour_from">
-      </label>
+      <label for="day">Dia:</label>
+      <input type="date" id="day">
 
-      <label>até:
-        <input type="time" id="hour_to">
-      </label>
+      <label for="hour_from">Hora de:</label>
+      <input type="time" id="hour_from">
+
+      <label for="hour_to">Até:</label>
+      <input type="time" id="hour_to">
 
       <button id="btnBuscar" type="button">Buscar</button>
-      <span id="status" aria-live="polite" style="margin-left:10px"></span>
+      <span id="status" aria-live="polite" style="margin-left: 10px;"></span>
     </div>
 
     <table id="tabelaLogs">
@@ -70,8 +68,11 @@
   </main>
 
   <footer id="rodape">
-    <h3>©2025 Interativa Fibra & Energia Ltda.<span id="span_rodape"> Todos os direitos reservados. CNPJ 38.174.307/0001-81</span></h3>
-    <img src="/static/img/logointerativa.png" alt="Logo Intertiva" class="logointerativa">
+    <h3>
+      ©2025 Interativa Fibra & Energia Ltda.
+      <span id="span_rodape">Todos os direitos reservados. CNPJ 38.174.307/0001-81</span>
+    </h3>
+    <img src="/static/img/logointerativa.png" alt="Logo Interativa" class="logointerativa">
   </footer>
 
   <script src="/static/script.js"></script>

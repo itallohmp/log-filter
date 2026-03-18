@@ -1,26 +1,33 @@
 // script.js
 // Leitura em streaming NDJSON do backend e renderização incremental na tabela.
-// Endpoint final: `${API_PREFIX}/logs/filter`
 
-const API_PREFIX = "/api"; // ajuste se necessário (ex.: "/api" ou "")
+const API_PREFIX = "/api"; // Se rodar sem proxy/root_path, pode trocar para ""
 let currentPage = 1;
 let currentTotalPages = 1;
 let currentController = null;
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+  await carregarRotas();
+
   const btn = document.getElementById("btnBuscar");
-  if (btn) btn.addEventListener("click", () => buscarLogs(1));
+  if (btn) {
+    btn.addEventListener("click", () => buscarLogs(1));
+  }
 });
 
 function buildUrl(page = 1) {
   const pageSize = document.getElementById("pageSize")?.value || "100";
-  const keyword = document.getElementById("keyword")?.value || "";
-  const ip = document.getElementById("ip")?.value || "";
-  const porta = document.getElementById("porta")?.value || "";
-  const day = document.getElementById("day")?.value || "";       // YYYY-MM-DD
+  const keyword = document.getElementById("keyword")?.value.trim() || "";
+  const ip = document.getElementById("ip")?.value.trim() || "";
+  const porta = document.getElementById("porta")?.value.trim() || "";
+  const day = document.getElementById("day")?.value || ""; // YYYY-MM-DD
   const hourFrom = document.getElementById("hour_from")?.value || ""; // HH:MM
-  const hourTo = document.getElementById("hour_to")?.value || "";     // HH:MM
-  const ipRota = document.getElementById("ip_rota") ? document.getElementById("ip_rota").value : "172.16.10.1";
+  const hourTo = document.getElementById("hour_to")?.value || ""; // HH:MM
+  const ipRota = document.getElementById("ip_rota")?.value.trim() || "";
+
+  if (!ipRota) {
+    throw new Error("Selecione uma rota.");
+  }
 
   const params = new URLSearchParams();
   params.set("ip_rota", ipRota);
@@ -30,12 +37,14 @@ function buildUrl(page = 1) {
   if (keyword) params.set("palavra_chave", keyword);
   if (ip) params.set("ip_nat", ip);
   if (porta) params.set("porta_nat", porta);
+
   if (day) {
     const [year, month, dayPart] = day.split("-");
     if (year) params.set("ano", year);
     if (month) params.set("mes", month.padStart(2, "0"));
     if (dayPart) params.set("dia", dayPart.padStart(2, "0"));
   }
+
   if (hourFrom) params.set("hora_de", hourFrom);
   if (hourTo) params.set("hora_ate", hourTo);
 
@@ -70,9 +79,9 @@ function appendRow(obj) {
   tbody.appendChild(tr);
 }
 
-function escapeHtml(s) {
-  if (s === null || s === undefined) return "";
-  return String(s)
+function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -83,6 +92,7 @@ function escapeHtml(s) {
 function renderPagination(page, totalPages) {
   currentPage = page;
   currentTotalPages = totalPages || 1;
+
   const pagination = document.getElementById("pagination");
   if (!pagination) return;
 
@@ -97,8 +107,18 @@ function renderPagination(page, totalPages) {
 
   const btnPrev = document.getElementById("btnPrev");
   const btnNext = document.getElementById("btnNext");
-  if (btnPrev) btnPrev.addEventListener("click", () => { if (page > 1) buscarLogs(page - 1); });
-  if (btnNext) btnNext.addEventListener("click", () => { if (page < totalPages) buscarLogs(page + 1); });
+
+  if (btnPrev) {
+    btnPrev.addEventListener("click", () => {
+      if (page > 1) buscarLogs(page - 1);
+    });
+  }
+
+  if (btnNext) {
+    btnNext.addEventListener("click", () => {
+      if (page < totalPages) buscarLogs(page + 1);
+    });
+  }
 }
 
 async function buscarLogs(page = 1) {
@@ -108,21 +128,50 @@ async function buscarLogs(page = 1) {
   }
 
   clearTable();
+
   const statusEl = document.getElementById("status");
   if (statusEl) statusEl.textContent = "Carregando...";
-  const url = buildUrl(page);
+
+  let url;
+  try {
+    url = buildUrl(page);
+  } catch (err) {
+    if (statusEl) statusEl.textContent = err.message;
+    alert(err.message);
+    return;
+  }
+
   console.log("URL chamada:", url);
 
   currentController = new AbortController();
   const signal = currentController.signal;
 
   try {
-    const resp = await fetch(url, { signal });
+    const resp = await fetch(url, {
+      signal,
+      headers: {
+        "Accept": "application/x-ndjson"
+      }
+    });
 
     if (!resp.ok) {
       const text = await resp.text();
-      if (statusEl) statusEl.textContent = `Erro: ${resp.status}`;
       console.error("Resposta não OK:", resp.status, text);
+
+      if (statusEl) {
+        statusEl.textContent = `Erro ${resp.status}`;
+      }
+
+      try {
+        const json = JSON.parse(text);
+        if (json.erro) {
+          alert(json.erro);
+          if (statusEl) statusEl.textContent = json.erro;
+        }
+      } catch {
+        // se não vier JSON, mantém o texto simples
+      }
+
       return;
     }
 
@@ -132,7 +181,7 @@ async function buscarLogs(page = 1) {
     }
 
     const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
+    const decoder = new TextDecoder("utf-8");
     let buffer = "";
     let receivedCount = 0;
 
@@ -142,14 +191,16 @@ async function buscarLogs(page = 1) {
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
+
       buffer += decoder.decode(value, { stream: true });
 
-      let lines = buffer.split("\n");
-      buffer = lines.pop();
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
 
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed) continue;
+
         try {
           const obj = JSON.parse(trimmed);
           appendRow(obj);
@@ -160,16 +211,14 @@ async function buscarLogs(page = 1) {
       }
     }
 
-    if (buffer) {
-      const trimmed = buffer.trim();
-      if (trimmed) {
-        try {
-          const obj = JSON.parse(trimmed);
-          appendRow(obj);
-          receivedCount++;
-        } catch (e) {
-          console.warn("Erro ao parsear buffer final:", e, trimmed);
-        }
+    // processa sobra final do buffer
+    if (buffer.trim()) {
+      try {
+        const obj = JSON.parse(buffer.trim());
+        appendRow(obj);
+        receivedCount++;
+      } catch (e) {
+        console.warn("Erro ao parsear buffer final:", e, buffer);
       }
     }
 
@@ -180,7 +229,10 @@ async function buscarLogs(page = 1) {
     }
 
     renderPagination(page, totalPagesGuess);
-    if (statusEl) statusEl.textContent = `Recebidos ${receivedCount} linhas.`;
+
+    if (statusEl) {
+      statusEl.textContent = `Recebidos ${receivedCount} linhas.`;
+    }
   } catch (err) {
     if (err.name === "AbortError") {
       if (statusEl) statusEl.textContent = "Busca cancelada.";
@@ -191,5 +243,41 @@ async function buscarLogs(page = 1) {
     }
   } finally {
     currentController = null;
+  }
+}
+
+async function carregarRotas() {
+  const select = document.getElementById("ip_rota");
+  if (!select) return;
+
+  select.innerHTML = `<option value="">Carregando rotas...</option>`;
+
+  try {
+    const resp = await fetch(`${API_PREFIX}/rotas`);
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(`Erro HTTP ${resp.status}: ${text}`);
+    }
+
+    const data = await resp.json();
+    const rotas = Array.isArray(data.rotas) ? data.rotas : [];
+
+    select.innerHTML = `<option value="">Selecione uma rota</option>`;
+
+    if (rotas.length === 0) {
+      select.innerHTML = `<option value="">Nenhuma rota encontrada</option>`;
+      return;
+    }
+
+    for (const rota of rotas) {
+      const option = document.createElement("option");
+      option.value = rota;
+      option.textContent = rota;
+      select.appendChild(option);
+    }
+  } catch (err) {
+    console.error("Erro ao carregar rotas:", err);
+    select.innerHTML = `<option value="">Erro ao carregar rotas</option>`;
   }
 }

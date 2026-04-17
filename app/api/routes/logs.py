@@ -13,7 +13,7 @@ def health():
 
 @router.get("/")
 def root():
-    return FileResponse("static/index.html")
+    return FileResponse("templates/index.html")
 
 @router.get("/rotas")
 def listar_rotas():

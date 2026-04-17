@@ -248,7 +248,7 @@ async function carregarRotas() {
   const select = document.getElementById("ip_rota");
   if (!select) return;
 
-  select.innerHTML = `<option value="">Carregando rotas...</option>`;
+  select.innerHTML = `<option value="">Carregando origens...</option>`;
 
   try {
     const resp = await fetch(`${API_PREFIX}/rotas`);
@@ -264,7 +264,7 @@ async function carregarRotas() {
     select.innerHTML = `<option value="">Seleciona uma origem</option>`;
 
     if (rotas.length === 0) {
-      select.innerHTML = `<option value="">Nenhuma rota encontrada</option>`;
+      select.innerHTML = `<option value="">Nenhuma origem encontrada</option>`;
       return;
     }
 

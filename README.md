@@ -1,10 +1,10 @@
 # PLog
 
-Sistema web para **consulta, processamento e filtragem de logs** com backend em **FastAPI**, acesso remoto via **SSH** e frontend servido por arquivos estáticos.
+PLog é uma ferramenta backend em Python + FastAPI para coletar, normalizar e filtrar logs de acesso de redes de fibra. O projeto automatiza buscas que antes eram feitas manualmente via SSH, transformando-as em consultas web estruturadas e entregando resultados em NDJSON por streaming — ideal para responder solicitações oficiais de investigação com rapidez e rastreabilidade.
 
 ## Visão geral
 
-O **PLog** foi desenvolvido para transformar um processo manual de busca e análise de logs, realizado via terminal SSH, em uma **interface web simples e eficiente**.
+Coletar logs de acesso à internet (ex.: logs de roteadores/gateways), extrair campos relevantes (IP, timestamp, NAT, porta, destino), aplicar filtros e expor os resultados via API para consumo por scripts, dashboards ou autoridades.
 
 A aplicação permite:
 

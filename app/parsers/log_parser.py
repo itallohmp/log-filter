@@ -3,7 +3,7 @@ from datetime import datetime, time
 from typing import Optional, Dict
 
 pattern = re.compile(
-    r"\*(\w+\s+\d+\s+\d+:\d+:\d+\.\d+).*?"
+    r"([A-Z][a-z]{2}\s+\d+\s+\d+:\d+:\d+\.\d+):.*?"
     r"Created Translation\s+"
     r"(UDP|TCP)\s+"
     r"(\d+\.\d+\.\d+\.\d+:\d+)\s+"

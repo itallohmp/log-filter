@@ -59,12 +59,12 @@ function appendRow(obj) {
   const tbody = document.querySelector("#tabelaLogs tbody");
   if (!tbody) return;
 
-  const data = obj.data || "";
-  const protocolo = obj.protocolo || "";
-  const origem = obj.origem || (obj.linha ? obj.linha : "");
-  const nat = obj.nat || "";
-  const destino = obj.destino || "";
-  const destino_final = obj.destino_final || "";
+  const data = obj.data || "-";
+  const protocolo = obj.protocolo || "-";
+  const origem = obj.origem || "-";
+  const nat = obj.nat || "-";
+  const destino = obj.destino || "-";
+  const destino_final = obj.destino_final || "-";
 
   const tr = document.createElement("tr");
   tr.innerHTML = `

@@ -10,13 +10,8 @@ import subprocess
 from datetime import datetime
 from typing import Optional
 
-from main import (
-    BASE_LOGS,
-    SCRIPT_DOWNLOAD,
-    SCRIPT_DESCOMPACTA,
-    parse_log_line,
-    parse_time_str,
-)
+from app.core.config import BASE_LOGS, SCRIPT_DOWNLOAD, SCRIPT_DESCOMPACTA
+from app.parsers.log_parser import parse_log_line, parse_time_str
 
 router = APIRouter()
 
@@ -66,7 +61,7 @@ def filter_logs(
                 ["bash", SCRIPT_DOWNLOAD, ip_rota, ano, mes, dia],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=300,
+                # timeout=300,
                 text=True,
                 env=os.environ.copy()
             )
@@ -93,7 +88,7 @@ def filter_logs(
                 ["bash", SCRIPT_DESCOMPACTA, ip_rota, ano, mes, dia],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=300,
+                # timeout=300,
                 text=True,
                 env=os.environ.copy()
             )
